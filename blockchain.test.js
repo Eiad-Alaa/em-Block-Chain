@@ -40,5 +40,18 @@ describe('Blockchain', () => {
     expect(blch.isValidChain(blch2.chain)).toBe(false);
   }
   );
+
+  it('replaces the chain with a valid chain', () => {
+    blch2.addBlock('eiad');
+    blch.replaceChain(blch2.chain);
+    expect(blch.chain).toEqual(blch2.chain);
+  }
+  );
+  it('does not replace a chain with one of less than or eqaul length', () =>{
+    blch.addBlock('eiad');
+    blch.replaceChain(blch2.chain)
+    expect(blch.chain).not.toEqual(blch2.chain);
+  });
+
 }
 );
