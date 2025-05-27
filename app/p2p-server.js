@@ -23,24 +23,35 @@ class P2pServer{
       const socket = new Websocket(peer);
 
       socket.on('open',()=>this.connectSocket(socket));
-      console.log(`Trying to connect to peer: ${peer}`);
     })
+  }
+
+  
+  connectSocket(socket){
+    this.sockets.push(socket);
+    console.log('socket connected');
+    
+    this.messageHandler(socket);
+    
+    this.sendChain(socket);
   }
 
   messageHandler(socket){
     socket.on('message', message=>{
       const data = JSON.parse(message);
       console.log('data received: ', data);
+      this.blockchain.replaceChain(data);
     });
   }
 
-  connectSocket(socket){
-    this.sockets.push(socket);
-    console.log('socket connected');
-
-    this.messageHandler(socket);
-
+  sendChain(socket){
     socket.send(JSON.stringify(this.blockchain.chain));
+  }
+
+  syncChains(){
+    this.sockets.forEach(socket=>{
+      this.sendChain(socket);
+    });
   }
 }
 
